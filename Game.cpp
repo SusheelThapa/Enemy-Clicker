@@ -183,6 +183,24 @@ bool handleEvents()
                 current_texture = game_homepage;
             }
         }
+
+        if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            int x, y;
+
+            SDL_GetMouseState(&x, &y);
+
+            /*start button is click*/
+            if (x > 100 && x < 400 && y > 275 && y < 355)
+            {
+                // Need to Write Logic For this
+            }
+            /*exit button is click*/
+            else if (x > 100 && x < 400 && y > 430 && y < 510)
+            {
+                return true;
+            }
+        }
     }
 
     return false;
