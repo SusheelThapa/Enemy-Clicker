@@ -2,27 +2,19 @@
 
 int main(int argc, char *arg[])
 {
-    bool quit = false;
 
     if (initialize())
     {
         if (loadWindow() && loadResourcesTexture())
         {
-            while (!quit)
+            while (!handleEvents())
             {
-                while (SDL_PollEvent(&e))
-                {
-                    if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
-                    {
-                        quit = true;
-                    }
-                }
 
                 SDL_SetRenderDrawColor(game_renderer, 255, 255, 255, 255);
 
                 SDL_RenderClear(game_renderer);
 
-                game_homepage.render(0, 0);
+                current_texture.render(0, 0);
 
                 SDL_RenderPresent(game_renderer);
             }

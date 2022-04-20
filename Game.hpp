@@ -22,12 +22,16 @@ SDL_Event e;
 TTF_Font *game_primary_font, *game_secondary_font;
 #endif
 
+Texture current_texture;
 Texture game_homepage;
+Texture game_homepage_start_button_hover;
+Texture game_homepage_exit_button_hover;
 Texture game_loading_screen[LOADING_SCREEN_TOTAL];
 
 bool initialize();
 bool loadWindow();
 bool loadResourcesTexture();
+bool handleEvents();
 void close();
 
 #if defined(SDL_TTF_MAJOR_VERSION)

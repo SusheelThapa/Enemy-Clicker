@@ -84,6 +84,7 @@ bool loadResourcesTexture()
 {
     bool status = true;
 
+    /*Loading Game homepage Screen*/
     if (!game_homepage.loadFromFile("images/initial-game-image.png"))
     {
         std::cout
@@ -93,7 +94,98 @@ bool loadResourcesTexture()
 
         status = false;
     }
+    if (!game_homepage_start_button_hover.loadFromFile("images/game-start-btn-hover.png"))
+    {
+        std::cout
+            << "Unable to load images.\nIMG_Error: "
+            << IMG_GetError()
+            << std::endl;
+
+        status = false;
+    }
+    if (!game_homepage_exit_button_hover.loadFromFile("images/game-exit-btn-hover.png"))
+    {
+        std::cout
+            << "Unable to load images.\nIMG_Error: "
+            << IMG_GetError()
+            << std::endl;
+
+        status = false;
+    }
+
+    /*Loading animation images*/
+    if (!game_loading_screen[LOADING_SCREEN_ONE].loadFromFile("images/game-loading-count-one.png"))
+    {
+        {
+            std::cout
+                << "Unable to load images.\nIMG_Error: "
+                << IMG_GetError()
+                << std::endl;
+
+            status = false;
+        }
+    }
+
+    if (!game_loading_screen[LOADING_SCREEN_TWO].loadFromFile("images/game-loading-count-two.png"))
+    {
+        {
+            std::cout
+                << "Unable to load images.\nIMG_Error: "
+                << IMG_GetError()
+                << std::endl;
+
+            status = false;
+        }
+    }
+
+    if (!game_loading_screen[LOADING_SCREEN_THREE].loadFromFile("images/game-loading-count-three.png"))
+    {
+        {
+            std::cout
+                << "Unable to load images.\nIMG_Error: "
+                << IMG_GetError()
+                << std::endl;
+
+            status = false;
+        }
+    }
+
     return status;
+}
+
+bool handleEvents()
+{
+    while (SDL_PollEvent(&e))
+    {
+        if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
+        {
+            return true;
+        }
+
+        if (e.type == SDL_MOUSEMOTION)
+        {
+            int x, y;
+
+            SDL_GetMouseState(&x, &y);
+
+            /*start button is hover*/
+            if (x > 100 && x < 400 && y > 275 && y < 355)
+            {
+                current_texture = game_homepage_start_button_hover;
+            }
+            /*exit button is hover*/
+            else if (x > 100 && x < 400 && y > 430 && y < 510)
+            {
+                current_texture = game_homepage_exit_button_hover;
+            }
+            else
+            {
+                current_texture = game_homepage;
+            }
+        }
+    }
+
+    return false;
 }
 
 void close()
