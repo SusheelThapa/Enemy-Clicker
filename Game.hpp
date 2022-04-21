@@ -1,5 +1,6 @@
 #include "Headers.hpp"
 #include "Texture.cpp"
+#include "Enemy.cpp"
 
 #define GAME_VERSION 1
 
@@ -22,16 +23,21 @@ SDL_Event e;
 TTF_Font *game_primary_font, *game_secondary_font;
 #endif
 
-Texture current_texture;
+Texture *current_texture;
+Texture game_background;
 Texture game_homepage;
 Texture game_homepage_start_button_hover;
 Texture game_homepage_exit_button_hover;
 Texture game_loading_screen[LOADING_SCREEN_TOTAL];
 
+Enemy enemies[5];
+
 bool initialize();
 bool loadWindow();
 bool loadResourcesTexture();
+bool loadEnemy();
 bool handleEvents();
+void startGame();
 void close();
 
 #if defined(SDL_TTF_MAJOR_VERSION)

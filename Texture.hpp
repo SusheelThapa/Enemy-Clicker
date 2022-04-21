@@ -10,7 +10,10 @@ Our Texture class
 #include "Headers.hpp"
 #endif
 
+#if !defined(GAME_RENDERER_EXIST)
+#define GAME_RENDERER_EXIST 1
 SDL_Renderer *game_renderer;
+#endif
 
 class Texture
 {

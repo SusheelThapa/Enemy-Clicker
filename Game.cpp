@@ -2,6 +2,9 @@
 
 bool initialize()
 {
+
+    srand(time(0));
+
     /*initialize function flag*/
     bool status = true;
 
@@ -94,6 +97,16 @@ bool loadResourcesTexture()
 
         status = false;
     }
+
+    if (!game_background.loadFromFile("images/game-background.png"))
+    {
+        std::cout
+            << "Unable to load images.\nIMG_Error: "
+            << IMG_GetError()
+            << std::endl;
+
+        status = false;
+    }
     if (!game_homepage_start_button_hover.loadFromFile("images/game-start-btn-hover.png"))
     {
         std::cout
@@ -153,16 +166,32 @@ bool loadResourcesTexture()
     return status;
 }
 
+bool loadEnemy()
+{
+    bool status = true;
+
+    enemies[0].initialize();
+    enemies[1].initialize();
+    enemies[2].initialize();
+    enemies[3].initialize();
+    enemies[4].initialize();
+
+    return status;
+}
+
 bool handleEvents()
 {
-    while (SDL_PollEvent(&e))
+    while (SDL_PollEvent(&e) != 0)
     {
         if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
         {
             return true;
         }
 
-        if (e.type == SDL_MOUSEMOTION)
+        if (e.type == SDL_MOUSEMOTION &&
+            (current_texture == &game_homepage ||
+             current_texture == &game_homepage_exit_button_hover ||
+             current_texture == &game_homepage_start_button_hover))
         {
             int x, y;
 
@@ -171,20 +200,23 @@ bool handleEvents()
             /*start button is hover*/
             if (x > 100 && x < 400 && y > 275 && y < 355)
             {
-                current_texture = game_homepage_start_button_hover;
+                current_texture = &game_homepage_start_button_hover;
             }
             /*exit button is hover*/
             else if (x > 100 && x < 400 && y > 430 && y < 510)
             {
-                current_texture = game_homepage_exit_button_hover;
+                current_texture = &game_homepage_exit_button_hover;
             }
             else
             {
-                current_texture = game_homepage;
+                current_texture = &game_homepage;
             }
         }
 
-        if (e.type == SDL_MOUSEBUTTONDOWN)
+        if (e.type == SDL_MOUSEBUTTONDOWN &&
+            (current_texture == &game_homepage ||
+             current_texture == &game_homepage_exit_button_hover ||
+             current_texture == &game_homepage_start_button_hover))
         {
             int x, y;
 
@@ -193,7 +225,8 @@ bool handleEvents()
             /*start button is click*/
             if (x > 100 && x < 400 && y > 275 && y < 355)
             {
-                // Need to Write Logic For this
+                current_texture = &game_background;
+                startGame();
             }
             /*exit button is click*/
             else if (x > 100 && x < 400 && y > 430 && y < 510)
@@ -201,11 +234,61 @@ bool handleEvents()
                 return true;
             }
         }
+
+        if (e.type == SDL_MOUSEBUTTONDOWN && current_texture == &game_background)
+        {
+            int x, y;
+
+            SDL_GetMouseState(&x, &y);
+
+            SDL_Rect enemy_size[5];
+
+            for (int i = 0; i < 5; i++)
+            {
+                enemy_size[i] = enemies[i].getEnemySize();
+
+                if (x > enemy_size[i].x && x < (enemy_size[i].x + enemy_size[i].w) && (y > enemy_size[i].y && x < (enemy_size[i].y + enemy_size[i].h)))
+                {
+                    std::cout << "Enemy is clicked" << std::endl;
+                }
+            }
+        }
     }
 
     return false;
 }
+void startGame()
+{
+    int life = 3;
 
+    while (life != 0)
+    {
+        if (handleEvents())
+        {
+            close();
+            exit(0);
+        }
+
+        SDL_SetRenderDrawColor(game_renderer, 255, 255, 255, 255);
+
+        SDL_RenderClear(game_renderer);
+
+        current_texture->render(0, 0);
+
+        enemies[0].render();
+        enemies[1].render();
+        enemies[2].render();
+        enemies[3].render();
+        enemies[4].render();
+
+        SDL_RenderPresent(game_renderer);
+
+        if (SDL_GetTicks() > 10000)
+        {
+            exit(0);
+        }
+    }
+}
 void close()
 {
 
