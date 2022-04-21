@@ -58,7 +58,7 @@ bool Texture::loadFromRenderedText(std::string text, SDL_Color color)
 {
     bool status = true;
 
-    SDL_Surface *temporary_surface = TTF_RenderText_Solid(game_primary_font, text.c_str(), color);
+    SDL_Surface *temporary_surface = TTF_RenderText_Solid(game_font, text.c_str(), color);
 
     if (temporary_surface == NULL)
     {

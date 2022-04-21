@@ -15,6 +15,11 @@ Our Texture class
 SDL_Renderer *game_renderer;
 #endif
 
+#if !defined(GAME_FONT_EXIST)
+#define GAME_FONT_EXIST 1
+TTF_Font *game_font;
+#endif
+
 class Texture
 {
 

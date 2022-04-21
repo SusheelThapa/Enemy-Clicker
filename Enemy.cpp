@@ -53,7 +53,6 @@ void Enemy::setEnemyLevel()
 
 void Enemy::setEnemyColor()
 {
-    // Logic to find random value of r, g, b and use to make color
     Uint8 red = (Uint8)randomNumberGenerator(0, 255, 3);
     Uint8 green = (Uint8)randomNumberGenerator(0, 255, 3);
     Uint8 blue = (Uint8)randomNumberGenerator(0, 255, 3);
@@ -66,7 +65,6 @@ void Enemy::setEnemyColor()
 
 void Enemy ::setEnemySize()
 {
-    // Logic to create enemy size of different dimension based on enemy level
 
     switch (enemy_level)
     {

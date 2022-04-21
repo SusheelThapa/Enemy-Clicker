@@ -176,6 +176,54 @@ bool loadResourcesTexture()
     return status;
 }
 
+bool loadGameDetails()
+{
+    bool status = true;
+
+    SDL_Color text_color = {260, 166, 135, 255};
+
+    std::stringstream score_text;
+    score_text.str("");
+    score_text << "Score: " << score;
+    if (!game_score.loadFromRenderedText(score_text.str().c_str(), text_color))
+    {
+        std::cout
+            << "Unable to load texture from text.\nTTF_Error: "
+            << TTF_GetError()
+            << std::endl;
+
+        status = false;
+    }
+
+    std::stringstream total_life_text;
+    total_life_text.str("");
+    total_life_text << "Life: " << total_life;
+    if (!game_total_life.loadFromRenderedText(total_life_text.str().c_str(), text_color))
+    {
+        std::cout
+            << "Unable to load texture from text.\nTTF_Error: "
+            << TTF_GetError()
+            << std::endl;
+
+        status = false;
+    }
+
+    std::stringstream time_text;
+    time_text.str("");
+    time_text << "Time: " << total_game_time;
+    if (!game_time.loadFromRenderedText(time_text.str().c_str(), text_color))
+    {
+        std::cout
+            << "Unable to load texture from text.\nTTF_Error: "
+            << TTF_GetError()
+            << std::endl;
+
+        status = false;
+    }
+
+    return status;
+}
+
 bool loadEnemy()
 {
     bool status = true;
@@ -284,8 +332,8 @@ bool handleEvents()
 
                 if (x > current_enemy_size.x && x < (current_enemy_size.x + current_enemy_size.w) && (y > current_enemy_size.y && x < (current_enemy_size.y + current_enemy_size.h)))
                 {
-                    // std::cout << "Enemy is clicked" << std::endl;
                     enemies.erase(enemies.begin() + i);
+                    score += 1;
                     loadEnemy();
                 }
             }
@@ -296,6 +344,12 @@ bool handleEvents()
 }
 void startGame()
 {
+
+    SDL_Rect renderQuadScore = {10, 5, 90, 30};
+    SDL_Rect renderQuadLife = {10, 35, 90, 30};
+    SDL_Rect renderQuadTime = {10, 65, 120, 30};
+
+    int start_time = SDL_GetTicks();
 
     while (total_life != 0)
     {
@@ -317,25 +371,39 @@ void startGame()
             if (enemies[i].getEnemySize().y + enemies[i].getEnemySize().h > SCREEN_HEIGHT)
             {
                 total_life -= 1;
+
                 if (total_life == 0)
                 {
                     game_over.render(0, 0);
 
+                    renderQuadScore = {50, 500, 400, 100};
+
+                    game_score.render(0, 0, nullptr, &renderQuadScore);
+
                     SDL_RenderPresent(game_renderer);
 
-                    SDL_Delay(1000);
+                    SDL_Delay(5000);
                     break;
                 }
-
-                // printf("Remaining life %d", total_life);
 
                 enemies.erase(enemies.begin() + i);
                 loadEnemy();
             }
+
             enemies[i].render();
         }
 
+        total_game_time = (SDL_GetTicks() - start_time) / 1000.000f;
+
+        loadGameDetails();
+
+        game_score.render(0, 0, nullptr, &renderQuadScore);
+        game_time.render(0, 0, nullptr, &renderQuadTime);
+        game_total_life.render(0, 0, nullptr, &renderQuadLife);
+
         SDL_RenderPresent(game_renderer);
+
+        // break;
     }
 
     /*Resetting total life for next game*/
@@ -344,8 +412,20 @@ void startGame()
 void close()
 {
 
+#if defined(SDL_TTF_MAJOR_VERSION)
+
+    TTF_CloseFont(game_font);
+
+#endif
+
     SDL_DestroyRenderer(game_renderer);
     SDL_DestroyWindow(game_window);
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+
+    TTF_Quit();
+
+#endif
 
 #if defined(SDL_IMAGE_MAJOR_VERSION)
 
@@ -355,3 +435,20 @@ void close()
 
     SDL_Quit();
 }
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool loadResourcesFont()
+{
+    bool status = true;
+
+    game_font = TTF_OpenFont("fonts/cascadia.ttf", 28);
+
+    if (game_font == nullptr)
+    {
+        std::cout << "Unable to load fonts.\nTTF_Error: " << TTF_GetError() << std::endl;
+        status = false;
+    }
+
+    return status;
+}
+#endif

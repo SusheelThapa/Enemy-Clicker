@@ -3,12 +3,19 @@
 int main(int argc, char *arg[])
 {
     current_texture = &game_homepage;
-    // current_texture = &game_background;
 
     bool quit = false;
 
     if (initialize())
     {
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+        if (!loadResourcesFont())
+        {
+            close();
+            exit(0);
+        }
+#endif
         if (loadWindow() && loadResourcesTexture() && loadEnemy())
         {
             while (!quit)

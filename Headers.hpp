@@ -12,8 +12,10 @@ header file require by the game.
 /*<-----SDL Header files------>*/
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 /*<-----C++ Header files------>*/
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
