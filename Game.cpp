@@ -126,6 +126,16 @@ bool loadResourcesTexture()
         status = false;
     }
 
+    if (!game_over.loadFromFile("images/game-over.png"))
+    {
+        std::cout
+            << "Unable to load images.\nIMG_Error: "
+            << IMG_GetError()
+            << std::endl;
+
+        status = false;
+    }
+
     /*Loading animation images*/
     if (!game_loading_screen[LOADING_SCREEN_ONE].loadFromFile("images/game-loading-count-one.png"))
     {
@@ -170,12 +180,12 @@ bool loadEnemy()
 {
     bool status = true;
 
-    enemies[0].initialize();
-    enemies[1].initialize();
-    enemies[2].initialize();
-    enemies[3].initialize();
-    enemies[4].initialize();
-
+    Enemy enemy;
+    while (enemies.size() <= TOTAL_NUMBER_OF_ENEMY)
+    {
+        enemy.initialize();
+        enemies.push_back(enemy);
+    }
     return status;
 }
 
@@ -246,10 +256,13 @@ bool handleEvents()
                 SDL_Delay(800);
 
                 startGame();
+
+                current_texture = &game_homepage;
             }
             /*exit button is click*/
             else if (x > 100 && x < 400 && y > 430 && y < 510)
             {
+                printf("Exit button in pressed");
                 return true;
             }
         }
@@ -262,15 +275,18 @@ bool handleEvents()
             /*Get current position of the mouse*/
             SDL_GetMouseState(&x, &y);
 
-            SDL_Rect enemy_size[5];
+            /*Finds which enemy is clicked and remove it and load new enemy*/
+            SDL_Rect current_enemy_size;
 
             for (int i = 0; i < 5; i++)
             {
-                enemy_size[i] = enemies[i].getEnemySize();
+                current_enemy_size = enemies[i].getEnemySize();
 
-                if (x > enemy_size[i].x && x < (enemy_size[i].x + enemy_size[i].w) && (y > enemy_size[i].y && x < (enemy_size[i].y + enemy_size[i].h)))
+                if (x > current_enemy_size.x && x < (current_enemy_size.x + current_enemy_size.w) && (y > current_enemy_size.y && x < (current_enemy_size.y + current_enemy_size.h)))
                 {
-                    std::cout << "Enemy is clicked" << std::endl;
+                    // std::cout << "Enemy is clicked" << std::endl;
+                    enemies.erase(enemies.begin() + i);
+                    loadEnemy();
                 }
             }
         }
@@ -281,9 +297,7 @@ bool handleEvents()
 void startGame()
 {
 
-    int life = 3;
-
-    while (life != 0)
+    while (total_life != 0)
     {
         if (handleEvents())
         {
@@ -297,19 +311,35 @@ void startGame()
 
         current_texture->render(0, 0);
 
-        enemies[0].render();
-        enemies[1].render();
-        enemies[2].render();
-        enemies[3].render();
-        enemies[4].render();
+        for (int i = 0; i < TOTAL_NUMBER_OF_ENEMY; i++)
+        {
+            /*when enemies touch the ground we reduce the life and remove enemies*/
+            if (enemies[i].getEnemySize().y + enemies[i].getEnemySize().h > SCREEN_HEIGHT)
+            {
+                total_life -= 1;
+                if (total_life == 0)
+                {
+                    game_over.render(0, 0);
+
+                    SDL_RenderPresent(game_renderer);
+
+                    SDL_Delay(1000);
+                    break;
+                }
+
+                // printf("Remaining life %d", total_life);
+
+                enemies.erase(enemies.begin() + i);
+                loadEnemy();
+            }
+            enemies[i].render();
+        }
 
         SDL_RenderPresent(game_renderer);
-
-        if (SDL_GetTicks() > 10000)
-        {
-            exit(0);
-        }
     }
+
+    /*Resetting total life for next game*/
+    total_life = 3;
 }
 void close()
 {

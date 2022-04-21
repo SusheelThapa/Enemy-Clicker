@@ -15,4 +15,5 @@ header file require by the game.
 
 /*<-----C++ Header files------>*/
 #include <iostream>
+#include <vector>
 #include <string>

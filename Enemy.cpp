@@ -25,7 +25,7 @@ int randomNumberGenerator(int lower_limit, int upper_limit, int number_of_digits
 
 void Enemy::setRenderPosition()
 {
-    render_position.x = randomNumberGenerator(1, 450, 3);
+    render_position.x = randomNumberGenerator(0, 400, 3);
     render_position.y = 100;
 }
 
@@ -71,23 +71,23 @@ void Enemy ::setEnemySize()
     switch (enemy_level)
     {
     case ENEMY_LEVEL_ONE:
-        enemy_size = {this->render_position.x, this->render_position.y, 80, 80};
+        enemy_size = {this->render_position.x, this->render_position.y, 100, 100};
         break;
 
     case ENEMY_LEVEL_TWO:
-        enemy_size = {this->render_position.x, this->render_position.y, 70, 70};
+        enemy_size = {this->render_position.x, this->render_position.y, 85, 85};
         break;
 
     case ENEMY_LEVEL_THREE:
-        enemy_size = {this->render_position.x, this->render_position.y, 60, 60};
+        enemy_size = {this->render_position.x, this->render_position.y, 70, 70};
         break;
 
     case ENEMY_LEVEL_FOUR:
-        enemy_size = {this->render_position.x, this->render_position.y, 40, 40};
+        enemy_size = {this->render_position.x, this->render_position.y, 60, 60};
         break;
 
     case ENEMY_LEVEL_FIVE:
-        enemy_size = {this->render_position.x, this->render_position.y, 30, 30};
+        enemy_size = {this->render_position.x, this->render_position.y, 50, 50};
         break;
     case ENEMY_LEVEL_NONE:
         break;
@@ -96,7 +96,7 @@ void Enemy ::setEnemySize()
 
 void Enemy::setVelocityInYDirection()
 {
-    velocity_in_y_direction = randomNumberGenerator(2, 5, 1);
+    velocity_in_y_direction = randomNumberGenerator(1, 2, 1);
 }
 
 Enemy::Enemy()
