@@ -183,11 +183,13 @@ bool handleEvents()
 {
     while (SDL_PollEvent(&e) != 0)
     {
+        /*If user press escape button or click X on window we quit the game*/
         if (e.type == SDL_QUIT || e.key.keysym.sym == SDLK_ESCAPE)
         {
             return true;
         }
 
+        /*When user hover over the start and exit button*/
         if (e.type == SDL_MOUSEMOTION &&
             (current_texture == &game_homepage ||
              current_texture == &game_homepage_exit_button_hover ||
@@ -195,6 +197,7 @@ bool handleEvents()
         {
             int x, y;
 
+            /*Get current position of the mouse*/
             SDL_GetMouseState(&x, &y);
 
             /*start button is hover*/
@@ -213,6 +216,7 @@ bool handleEvents()
             }
         }
 
+        /*When user click over the start or exit button*/
         if (e.type == SDL_MOUSEBUTTONDOWN &&
             (current_texture == &game_homepage ||
              current_texture == &game_homepage_exit_button_hover ||
@@ -220,12 +224,27 @@ bool handleEvents()
         {
             int x, y;
 
+            /*Get current position of the mouse*/
             SDL_GetMouseState(&x, &y);
 
             /*start button is click*/
             if (x > 100 && x < 400 && y > 275 && y < 355)
             {
                 current_texture = &game_background;
+
+                /*Laoding Screen for the game when start button is pressed in rendered*/
+                game_loading_screen[LOADING_SCREEN_THREE].render(0, 0);
+                SDL_RenderPresent(game_renderer);
+                SDL_Delay(800);
+
+                game_loading_screen[LOADING_SCREEN_TWO].render(0, 0);
+                SDL_RenderPresent(game_renderer);
+                SDL_Delay(800);
+
+                game_loading_screen[LOADING_SCREEN_ONE].render(0, 0);
+                SDL_RenderPresent(game_renderer);
+                SDL_Delay(800);
+
                 startGame();
             }
             /*exit button is click*/
@@ -235,10 +254,12 @@ bool handleEvents()
             }
         }
 
+        /*When user click over the enemy in the game*/
         if (e.type == SDL_MOUSEBUTTONDOWN && current_texture == &game_background)
         {
             int x, y;
 
+            /*Get current position of the mouse*/
             SDL_GetMouseState(&x, &y);
 
             SDL_Rect enemy_size[5];
@@ -259,6 +280,7 @@ bool handleEvents()
 }
 void startGame()
 {
+
     int life = 3;
 
     while (life != 0)
